@@ -1,20 +1,19 @@
 const mongoose = require("mongoose");
-mongoose.connect('mongodb://localhost:27017/wishlist');
 
 const wishSchema = new mongoose.Schema({
-  username: String,
-  title: String,
-  description: String,
-  reserved: Boolean,
+  username: { type: String, required: true },
+  title: { type: String, required: true },
+  description: { type: String, required: true },
+  reserved: {type: Boolean, default: false},
   reserver_name: String,
   reserver_email: String,
   url: String,
 });
 
 const userSchema = new mongoose.Schema({
-  username: String,
-  email: String,
-  password: String,
+  username: { type: String, required: true },
+  email: { type: String, required: true },
+  password: { type: String, required: true },
 });
 
 const Wish = mongoose.model('wish', wishSchema);

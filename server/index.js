@@ -1,18 +1,25 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
+const path = require('path');
 const morgan = require('morgan');
-const { User, Wish } = require('../db.js');
+const routes = require('./routes.js');
+const mongoose = require('mongoose');
 
 const port = process.env.PORT;
 
+app.use(express.static(path.join(__dirname, "../client/dist")));
 app.use(express.json());
 app.use(morgan('dev'));
 
-app.get('/', (req, res) => {
-  res.send('Hello wishlist!');
-});
+app.use('/api/wishList', routes);
 
-app.listen(port, () => {
-  console.log(`Listening on port ${port}`);
-});
+mongoose.connect('mongodb://localhost:27017/wishlist')
+  .then(() => {
+    app.listen(port, () => {
+      console.log(`Listening on port ${port} and contected to db`);
+    });
+  })
+  .catch((err) => {
+    console.log(err);
+  });
