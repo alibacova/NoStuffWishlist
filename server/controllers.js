@@ -50,7 +50,7 @@ const controllers = {
       return res.status(404).json({error: 'The wish was not found'});
     }
     // const username = req.param.username;
-    const wish = await Wish.findOneAndUpdate({ _id: wid, ...req.body });
+    const wish = await Wish.findOneAndUpdate({ _id: wid}, {...req.body });
     if (!wish) {
       return res.status(400).json({error: 'The wish was not found'});
     }
