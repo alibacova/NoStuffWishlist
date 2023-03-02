@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { useWishListContext } from '../hooks/useWishListContext.jsx';
 import axios from 'axios';
 import WishForm from './WishForm.jsx';
 import ReserveWishForm from './ReserveWishForm.jsx';
 
 const Wish = ({ wish }) => {
+  const { dispatch } = useWishListContext();
 
   const [isOpen, setIsOpen] = useState(false);
   const [error, setError] = useState(null);
@@ -14,7 +16,7 @@ const Wish = ({ wish }) => {
   const handleDelete = (e) => {
     e.preventDefault();
     axios.delete(`/api/wishList/${wish._id}`)
-      .then((result) => console.log(result))
+      .then((result) => dispatch({type: 'DELETE_WISH', payload: result.data}))
       .catch((err) => setError(err));
     setError(null);
   };
