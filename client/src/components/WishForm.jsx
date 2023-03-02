@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useWishListContext } from '../hooks/useWishListContext.jsx';
 import axios from 'axios';
 
 const WishForm = ({ type, setShowEdit, wish }) => {
@@ -9,6 +10,7 @@ const WishForm = ({ type, setShowEdit, wish }) => {
     url: ''
   };
 
+  const { dispatch } = useWishListContext();
   const [newWish, setWish] = useState(initialWish);
   const [error, setError] = useState(null);
 
@@ -16,12 +18,14 @@ const WishForm = ({ type, setShowEdit, wish }) => {
     e.preventDefault();
     if (type === 'add') {
       axios.post('/api/wishList/', newWish)
-        .then((result) => console.log(result))
+        .then((result) => dispatch({type: 'CREATE_WISH', payload: result.data}))
         .catch((err) => setError(err));
       setWish(initialWish);
     } else if (type === 'edit') {
       axios.put(`/api/wishList/${wish._id}`, newWish)
-        .then((result) => console.log(result))
+        .then((result) => {
+          console.log('result ', result);
+          dispatch({type: 'UPDATE_WISH', payload: result.data})})
         .catch((err) => setError(err));
       setShowEdit(false);
     }
