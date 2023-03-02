@@ -31,8 +31,11 @@ const Wish = ({ wish }) => {
       <button onClick={handleDelete}>Delete</button>
       <button onClick={() => setShowEdit(!showEdit)}>Edit</button>
       {showEdit && <WishForm wish={wish} type='edit' setShowEdit={setShowEdit}/>}
-      {(!isReserved || wish.reserved === false) && <button onClick={() => setShowReserveForm(true)}>Reserve</button>}
-      {(isReserved || wish.reserved === true) && <button disabled={true}>Reserved</button>}
+      <button onClick={() => {if (!wish.reserved) {
+        setShowReserveForm(!showReserveForm)
+      }}}>
+        {wish.reserved ? 'Reserved' : 'Reserve'}
+      </button>
       {showReserveForm && <ReserveWishForm wish={wish} setIsReserved={setIsReserved} setShowReserveForm={setShowReserveForm}/>}
     </div>
   );
