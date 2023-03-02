@@ -14,15 +14,18 @@ export const wishListReducer = (state, action) => {
       }
     case 'UPDATE_WISH' :
       return {
-        wishList: [action.payload, ...state.wishList]
+        wishList: state.wishList.map((wish) => {
+          return wish._id === action.payload._id ? action.payload : wish;
+        })
       }
     case 'DELETE_WISH' :
       return {
-
+        wishList: state.wishList.filter((wish) => wish._id !== action.payload._id)
       }
     default :
       return state;
   }
+  throw Error("unknown action: ", + action.type);
 };
 
 export const WishListContextProvider = ({ children }) => {
