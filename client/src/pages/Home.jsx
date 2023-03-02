@@ -11,7 +11,7 @@ const Home = () => {
     axios.get('/api/wishList')
       .then((result) => dispatch({type: 'SET_WISHLIST', payload: result.data}))
       .catch((err) => console.error(err));
-  }, []);
+  }, [dispatch]);
 
   return (
     <div>
