@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import WishList from '../components/WishList.jsx';
-import AddWishForm from '../components/AddWishForm.jsx';
+import WishForm from '../components/WishForm.jsx';
 
 const Home = () => {
   const [wishList, setWishList] = useState(null);
@@ -15,7 +15,7 @@ const Home = () => {
   return (
     <div>
       <WishList wishList={wishList}/>
-      <AddWishForm />
+      <WishForm type='add' />
     </div>
   );
 };
