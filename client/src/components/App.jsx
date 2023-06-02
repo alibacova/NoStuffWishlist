@@ -8,20 +8,26 @@ import { Container, Typography } from '@mui/material';
 const App = () => {
 
   return (
-    <div className="app">
-      <BrowserRouter>
-        <Container sx={{bgcolor: '#3BCEAC', height: '100vh'}}>
-          <Navbar />
-          <Typography variant='h3' sx={{my: 4, color: 'primary.main'}}>Alex's Wishlist</Typography>
+    <Container sx={{bgcolor: '#FFBE0B', height: '100vh'}}>
+      <div className="app">
+        <BrowserRouter>
+          {/* <Navbar /> */}
+          <Typography
+            variant='h1'
+            align='center'
+            sx={{p: 4, color: '#FF006E', fontFamily: 'Tilt Prism'}}
+          >
+            Non-material Wishlist
+          </Typography>
           <div className="pages">
             <Routes>
               <Route path='/' element={<Home />} />
               {/* <Route path='/signup' component={<SignupForm />} /> */}
             </Routes>
           </div>
-        </Container>
-      </BrowserRouter>
-    </div>
+        </BrowserRouter>
+      </div>
+    </Container>
   );
 };
 
