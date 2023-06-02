@@ -3,7 +3,7 @@ import { useWishListContext } from '../hooks/useWishListContext.jsx';
 import axios from 'axios';
 import WishForm from './WishForm.jsx';
 import ReserveWishForm from './ReserveWishForm.jsx';
-import { Button, Typography, Card, Paper, Grid, IconButton, } from '@mui/material';
+import { Button, Typography, Card, Paper, Grid, IconButton, Link} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 
@@ -25,36 +25,34 @@ const Wish = ({ wish }) => {
   };
 
   return (
-    <Paper sx={{my: 4, p: 3}}>
+    <Paper sx={{my: 4, p: 3, bgcolor: '#FEE7DC'}}>
       <Grid container spacing={2}>
-        <Grid item xs={10}>
-          <Typography variant='h6' sx={{my: 1, color: '#0EAD69'}} onClick={() => setIsOpen(!isOpen)}>{wish.title}</Typography>
+        <Grid item xs={9}>
+          <Typography variant='h6' sx={{my: 1, color: '#3A86FF'}} onClick={() => setIsOpen(!isOpen)}>{wish.title}</Typography>
           {isOpen &&
             <>
-              <Typography variant='body1' sx={{px: 1, my: 1, color: '#EE4266'}}>{wish.description}</Typography>
-              <Typography variant='body1' sx={{px: 1, my: 1, color: '#EE4266'}}>{wish.url ? wish.url : ''}</Typography>
+              <Typography variant='body1' sx={{my: 1}}>{wish.description}</Typography>
+              <Link variant='body1' href="#" sx={{my: 1, color: '#FF006E'}}>{wish.url ? wish.url : ''}</Link>
             </>
           }
           {showEdit && <WishForm wish={wish} type='edit' setShowEdit={setShowEdit}/>}
+          {showReserveForm && <ReserveWishForm wish={wish} setIsReserved={setIsReserved} setShowReserveForm={setShowReserveForm}/>}
         </Grid>
         <Grid item xs={2}>
-          {/* <button onClick={handleDelete}>Delete</button> */}
-          {/* <Button variant='contained' onClick={handleDelete}>Delete</Button> */}
-          <IconButton aria-label="edit" size='small' onClick={() => setShowEdit(!showEdit)}>
-            <EditIcon sx={{color: '#0EAD69'}}/>
-          </IconButton>
-          <IconButton aria-label="delete" size='small' onClick={handleDelete}>
-            <DeleteIcon sx={{color: '#EE4266'}}/>
-          </IconButton>
-          {/* <Button variant='outlined' onClick={() => setShowEdit(!showEdit)}>Edit</Button>
-           */}
-
           <Button variant='outlined' onClick={() => {if (!wish.reserved) {
             setShowReserveForm(!showReserveForm)
           }}}>
-            {wish.reserved ? 'Promised' : 'Promise'}
+            {wish.reserved || isReserved ? 'Reserved' : 'Reserve'}
           </Button>
-          {showReserveForm && <ReserveWishForm wish={wish} setIsReserved={setIsReserved} setShowReserveForm={setShowReserveForm}/>}
+          {/* {showReserveForm && <ReserveWishForm wish={wish} setIsReserved={setIsReserved} setShowReserveForm={setShowReserveForm} showReserveForm={showReserveForm}/>} */}
+        </Grid>
+        <Grid item xs={1}>
+          <IconButton aria-label="edit" size='small' onClick={() => setShowEdit(!showEdit)}>
+            <EditIcon sx={{color: '#3A86FF'}}/>
+          </IconButton>
+          <IconButton aria-label="delete" size='small' onClick={handleDelete}>
+            <DeleteIcon sx={{color: '#FB5607'}}/>
+          </IconButton>
         </Grid>
 
       </Grid>
