@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useWishListContext } from '../hooks/useWishListContext.jsx';
 import axios from 'axios';
 import WishList from '../components/WishList.jsx';
 import WishForm from '../components/WishForm.jsx';
+import { Button } from '@mui/material';
 
 const Home = () => {
   const {wishList, dispatch} = useWishListContext();
@@ -15,8 +16,8 @@ const Home = () => {
 
   return (
     <div>
-      <WishList wishList={wishList}/>
       <WishForm type='add' />
+      <WishList wishList={wishList}/>
     </div>
   );
 };
