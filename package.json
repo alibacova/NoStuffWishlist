@@ -8,7 +8,9 @@
     "client-dev": "npx webpack --watch",
     "build": "npx webpack",
     "start": "node server/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --write \"src/**/*.{js,jsx}\"",
+    "lint": "eslint \"src/**/*.{js,jsx}\" --quiet"
   },
   "repository": {
     "type": "git",
@@ -44,7 +46,10 @@
     "webpack-cli": "^5.0.1"
   },
   "devDependencies": {
-    "nodemon": "^2.0.20"
+    "eslint": "^8.52.0",
+    "eslint-config-prettier": "^9.0.0",
+    "nodemon": "^2.0.20",
+    "prettier": "^3.0.3"
   },
   "browser": {
     "fs": false,
