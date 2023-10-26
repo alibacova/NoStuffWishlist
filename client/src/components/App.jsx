@@ -1,9 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route, Switch } from 'react-router-dom';
+import React, {
+  useState,
+  useEffect,
+} from 'react';
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Switch,
+} from 'react-router-dom';
 import Navbar from './Navbar.jsx';
 import Home from '../pages/Home.jsx';
-import { Container, Typography } from '@mui/material';
-// import SignupForm from './SignupForm.jsx';
+import {
+  Container,
+  Typography,
+} from '@mui/material';
+import SignupForm from './SignupForm.jsx';
+import LoginForm from './LoginForm.jsx';
 
 const App = () => {
 
@@ -11,18 +23,12 @@ const App = () => {
     <Container sx={{bgcolor: '#FFBE0B', height: '100vh'}}>
       <div className="app">
         <BrowserRouter>
-          {/* <Navbar /> */}
-          <Typography
-            variant='h1'
-            align='center'
-            sx={{p: 4, color: '#FF006E', fontFamily: 'Tilt Prism'}}
-          >
-            Non-material Wishlist
-          </Typography>
+          <Navbar />
           <div className="pages">
             <Routes>
-              <Route path='/' element={<Home />} />
-              {/* <Route path='/signup' component={<SignupForm />} /> */}
+              <Route exact path='/' element={<Home />} />
+              <Route path='/signup' element={<SignupForm />} />
+              <Route path='/login' element={<LoginForm />} />
             </Routes>
           </div>
         </BrowserRouter>
