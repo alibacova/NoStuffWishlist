@@ -18,7 +18,7 @@ const SignupForm = () => {
     password: "",
     passwordConf: "",
   };
-  const { user, dispatch } = useAuthContext();
+  const { dispatch } = useAuthContext();
 
   const [userInfo, setUserInfo] = useState(initialUserInfo);
   const [error, setError] = useState(null);
@@ -31,15 +31,9 @@ const SignupForm = () => {
     if (userInfo.password !== userInfo.passwordConf) {
       return setError("Passwords do not match");
     }
-    try {
-      setError(null);
-      setLoading(true);
-      const user = await signup(userInfo);
-    } catch {
-      setError("Could not create an account");
-    }
-    setUserInfo(initialUserInfo);
-    setLoading(false);
+    setError(null);
+    setLoading(true);
+    await signup(userInfo);
   }
 
   async function signup(userInfo) {
@@ -50,15 +44,17 @@ const SignupForm = () => {
         setUserInfo(initialUserInfo);
         setLoading(false);
         setError(null);
-        dispatch({ type: "SIGN_UP", payload: result.data.email });
+        dispatch({ type: "SIGN_UP", payload: result.data });
+        localStorage.setItem("user", JSON.stringify(result.data));
         navigate("/");
       })
       .catch((err) => {
-        setError(err);
-        setUserInfo(initialUserInfo);
+        console.log(err.response.data.error);
+        setError(err.response.data.error);
       });
   }
 
+  // TODO: add conditional rendering for loading
   return (
     <Paper component="form">
       <Stack spacing={1} sx={{ p: 2, bgcolor: "#FEE7DC" }}>
@@ -108,6 +104,7 @@ const SignupForm = () => {
             />
           </FormControl>
           <Button variant="contained" type="submit" onClick={handleSubmit}>
+            {/* need to add disabled property for when the status isLoading is true */}
             Sign up
           </Button>
           {error && <div className="error">{error}</div>}
