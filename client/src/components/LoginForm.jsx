@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import {
   Button,
   Typography,
@@ -13,43 +14,62 @@ import {
   Stack,
   Paper,
 } from "@mui/material";
+import { useAuthContext } from "../hooks/useAuthContext.js";
 
 const LoginForm = () => {
-  const initialForm = {
-    username: "tapushka",
+  const initialLoginInfo = {
     email: "",
     password: "",
   };
 
-  const { dispatch } = useWishListContext();
-  const [login, setLogin] = useState(initialForm);
+  const { dispatch } = useAuthContext();
+  const navigate = useNavigate();
+  const [loginInfo, setLoginInfo] = useState(initialLoginInfo);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  async function handleSubmit(e) {
     e.preventDefault();
-    axios
-      .post("/api/login", login)
-      .then((result) => console.log(result))
-      .catch((err) => setError(err));
-    setLogin(initialForm);
     setError(null);
-  };
+    setLoading(true);
+    await login(loginInfo);
+  }
+
+  function login(loginInfo) {
+    axios
+      .post("/api/user/login", loginInfo)
+      .then((result) => {
+        console.log(result);
+        setLoginInfo(initialLoginInfo);
+        setLoading(false);
+        setError(null);
+        dispatch({ type: "SIGN_IN", payload: result.data });
+        localStorage.setItem("user", JSON.stringify(result.data));
+        navigate("/");
+      })
+      .catch((err) => {
+        console.log(err.response.data.error);
+        setError(err.response.data.error);
+      });
+  }
 
   return (
     <Paper component="form">
       <Stack spacing={1} sx={{ p: 2, bgcolor: "#FEE7DC" }}>
         <>
           <Typography variant="h3" sx={{ my: 1, color: "black" }}>
-            LOGIN
+            LOG IN
           </Typography>
           <FormControl>
             <InputLabel htmlFor="component-outlined">Email</InputLabel>
             <OutlinedInput
               id="component-outlined"
               label="Email"
-              value={login.email}
+              value={loginInfo.email}
               required={true}
-              onChange={(e) => setLogin({ ...login, email: e.target.value })}
+              onChange={(e) =>
+                setLoginInfo({ ...loginInfo, email: e.target.value })
+              }
               sx={{ color: "primary.main" }}
             />
           </FormControl>
@@ -58,14 +78,16 @@ const LoginForm = () => {
             <OutlinedInput
               id="component-outlined"
               label="Password"
-              value={login.password}
+              value={loginInfo.password}
               required={true}
-              onChange={(e) => setLogin({ ...login, password: e.target.value })}
+              onChange={(e) =>
+                setLoginInfo({ ...loginInfo, password: e.target.value })
+              }
               sx={{ color: "primary.main" }}
             />
           </FormControl>
           <Button variant="contained" type="submit" onClick={handleSubmit}>
-            Login
+            Log in
           </Button>
           {error && <div className="error">{error}</div>}
         </>
