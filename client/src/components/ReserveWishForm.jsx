@@ -1,12 +1,24 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { Button, FormControl, InputLabel, IconButton, OutlinedInput, Grid } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
+import React, { useState } from "react";
+import axios from "axios";
+import {
+  Button,
+  FormControl,
+  InputLabel,
+  IconButton,
+  OutlinedInput,
+  Grid,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
-const ReserveWishForm = ({ wish, setIsReserved, setShowReserveForm, showReserveForm }) => {
+const ReserveWishForm = ({
+  wish,
+  setIsReserved,
+  setShowReserveForm,
+  showReserveForm,
+}) => {
   const initialReserver = {
-    reserver_name: '',
-    reserver_email: '',
+    reserver_name: "",
+    reserver_email: "",
     reserved: true,
   };
 
@@ -16,7 +28,8 @@ const ReserveWishForm = ({ wish, setIsReserved, setShowReserveForm, showReserveF
   const handleSubmit = (e) => {
     e.preventDefault();
     if (reserver.reserver_name && reserver.reserver_email) {
-      axios.put(`/api/wishList/${wish._id}`, reserver)
+      axios
+        .put(`/api/wishList/${wish._id}`, reserver)
         .then((result) => {
           console.log(result);
           setIsReserved(true);
@@ -25,7 +38,7 @@ const ReserveWishForm = ({ wish, setIsReserved, setShowReserveForm, showReserveF
       setShowReserveForm(false);
       setError(null);
     } else {
-      setError('Please fill in both fields');
+      setError("Please fill in both fields");
     }
   };
 
@@ -33,9 +46,9 @@ const ReserveWishForm = ({ wish, setIsReserved, setShowReserveForm, showReserveF
     <Grid
       container
       // spacing={0.5}
-      component='form'
+      component="form"
       // alignItems='center'
-      justifyContent='center'
+      justifyContent="center"
     >
       <Grid item xs={6}>
         <FormControl>
@@ -45,9 +58,11 @@ const ReserveWishForm = ({ wish, setIsReserved, setShowReserveForm, showReserveF
             label="Name"
             value={reserver.reserver_name}
             required={true}
-            onChange={(e) => setReserver({...reserver, reserver_name: e.target.value})}
-            sx={{color: 'primary.main', m: 1}}
-            size='small'
+            onChange={(e) =>
+              setReserver({ ...reserver, reserver_name: e.target.value })
+            }
+            sx={{ color: "primary.main", m: 1 }}
+            size="small"
           />
         </FormControl>
       </Grid>
@@ -59,23 +74,25 @@ const ReserveWishForm = ({ wish, setIsReserved, setShowReserveForm, showReserveF
             label="Email"
             value={reserver.reserver_email}
             required={true}
-            onChange={(e) => setReserver({...reserver, reserver_email: e.target.value})}
-            sx={{color: 'primary.main', m: 1}}
-            size='small'
+            onChange={(e) =>
+              setReserver({ ...reserver, reserver_email: e.target.value })
+            }
+            sx={{ color: "primary.main", m: 1 }}
+            size="small"
           />
         </FormControl>
       </Grid>
       <Grid item xs={2}>
         <Button
-          size='small'
-          variant='outlined'
-          type='submit'
+          size="small"
+          variant="outlined"
+          type="submit"
           onClick={handleSubmit}
         >
-            Reserve
+          Reserve
         </Button>
-        </Grid>
-        {/* <Grid item xs={1}>
+      </Grid>
+      {/* <Grid item xs={1}>
         <IconButton
           size='small'
           variant='outlined'
@@ -85,9 +102,9 @@ const ReserveWishForm = ({ wish, setIsReserved, setShowReserveForm, showReserveF
         </IconButton>
 
       </Grid> */}
-      {error && <div className='error'>{error}</div>}
+      {error && <div className="error">{error}</div>}
     </Grid>
   );
-}
+};
 
 export default ReserveWishForm;
