@@ -1,6 +1,9 @@
 const express = require("express");
-const router = express.Router();
+const requireAuth = require("../middleware/requireAuth.js");
 const controllers = require("../controllers/wishes.js");
+
+const router = express.Router();
+router.use(requireAuth);
 
 router.get("/", controllers.getWishList);
 router.get("/:wid", controllers.getWish);
