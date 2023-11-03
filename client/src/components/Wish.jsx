@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useWishListContext } from "../hooks/useWishListContext.js";
+import { useAuthContext } from "../hooks/useAuthContext.js";
 import axios from "axios";
 import WishForm from "./WishForm.jsx";
 import ReserveWishForm from "./ReserveWishForm.jsx";
@@ -17,6 +18,7 @@ import EditIcon from "@mui/icons-material/Edit";
 
 const Wish = ({ wish }) => {
   const { dispatch } = useWishListContext();
+  const { user } = useAuthContext();
 
   const [isOpen, setIsOpen] = useState(false);
   const [error, setError] = useState(null);
@@ -26,8 +28,16 @@ const Wish = ({ wish }) => {
 
   const handleDelete = (e) => {
     e.preventDefault();
+    if (!user) {
+      setError("You must be logged in");
+      return;
+    }
     axios
-      .delete(`/api/wishList/${wish._id}`)
+      .delete(`/api/wishList/${wish._id}`, {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      })
       .then((result) => dispatch({ type: "DELETE_WISH", payload: result.data }))
       .catch((err) => setError(err));
     setError(null);

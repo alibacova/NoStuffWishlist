@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useWishListContext } from "../hooks/useWishListContext.js";
+import { useAuthContext } from "../hooks/useAuthContext.js";
 import axios from "axios";
 import {
   Button,
@@ -24,15 +25,24 @@ const WishForm = ({ type, setShowEdit, wish }) => {
   };
 
   const { dispatch } = useWishListContext();
+  const { user } = useAuthContext();
   const [newWish, setWish] = useState(initialWish);
   const [isOpen, setIsOpen] = useState(false);
   const [error, setError] = useState(null);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (!user) {
+      setError("You must be logged in!");
+      return;
+    }
     if (type === "add") {
       axios
-        .post("/api/wishList/", newWish)
+        .post("/api/wishList/", newWish, {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        })
         .then((result) =>
           dispatch({ type: "CREATE_WISH", payload: result.data }),
         )
@@ -40,7 +50,11 @@ const WishForm = ({ type, setShowEdit, wish }) => {
       setWish(initialWish);
     } else if (type === "edit") {
       axios
-        .put(`/api/wishList/${wish._id}`, newWish)
+        .put(`/api/wishList/${wish._id}`, newWish, {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        })
         .then((result) => {
           console.log("result ", result);
           dispatch({ type: "UPDATE_WISH", payload: result.data });
