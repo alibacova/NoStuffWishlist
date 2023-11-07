@@ -3,11 +3,8 @@ const { Wish } = require("../../db.js");
 
 const controllers = {
   getWishList: async (req, res) => {
-    // console.log('username is ', req.param.username);
-    // const username = req.param.username;
-    // const list = Wish.aggregate($match: { username });
-    // .sort({createdAt: -1})
-    const list = await Wish.find({});
+    const user_id = req.user_id.id;
+    const list = await Wish.find({ user_id }).sort({ createdAt: -1 });
     res.status(200).send(list);
   },
 
@@ -16,7 +13,6 @@ const controllers = {
     if (!mongoose.Types.ObjectId.isValid(wid)) {
       return res.status(404).json({ error: "The wish was not found" });
     }
-    // const username = req.param.username;
     const wish = await Wish.findById(wid);
     if (!wish) {
       return res.status(404).json({ error: "The wish was not found" });
@@ -25,18 +21,15 @@ const controllers = {
   },
 
   addWish: async (req, res) => {
-    // console.log('username is ', req.param.username);
-    // console.log('wish is ', req.body);
-    // if (!req.param.username) {
-    //   res.status(401).send('Unauthorized request');
-    // }
     if (!req.body.title || !req.body.description) {
       res.status(400).send("Please fill in the title and the description");
     }
-    // // const username = req.param.username;
-    const { username, title, description, url } = req.body;
+
+    const user_id = req.user_id._id;
+    const { title, description, url } = req.body;
+
     try {
-      const wish = await Wish.create({ username, title, description, url });
+      const wish = await Wish.create({ user_id, title, description, url });
       res.status(201).send(wish);
     } catch (error) {
       res.status(400).json({ error: error.message });
@@ -48,7 +41,6 @@ const controllers = {
     if (!mongoose.Types.ObjectId.isValid(wid)) {
       return res.status(404).json({ error: "The wish was not found" });
     }
-    // const username = req.param.username;
     const wish = await Wish.findOneAndUpdate({ _id: wid }, req.body, {
       new: true,
     });
@@ -63,7 +55,6 @@ const controllers = {
     if (!mongoose.Types.ObjectId.isValid(wid)) {
       return res.status(404).json({ error: "The wish was not found" });
     }
-    // const username = req.param.username;
     const wish = await Wish.findOneAndDelete({ _id: wid });
     if (!wish) {
       return res.status(400).json({ error: "The wish was not found" });

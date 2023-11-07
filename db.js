@@ -3,12 +3,13 @@ const bcrypt = require("bcrypt");
 const validator = require("validator");
 
 const wishSchema = new mongoose.Schema({
-  username: { type: String, required: true },
+  user_id: { type: String, required: true },
   title: { type: String, required: true },
   description: { type: String, required: true },
   reserved: { type: Boolean, default: false },
-  reserver_name: String,
+  reserver_user_id: { type: String, default: null },
   reserver_email: String,
+  reserver_name: String,
   url: String,
 });
 
@@ -40,7 +41,7 @@ userSchema.statics.signup = async function (email, password) {
   const salt = await bcrypt.genSalt(10);
   const hash = await bcrypt.hash(password, salt);
 
-  const user = this.create({ email, password: hash });
+  const user = await this.create({ email, password: hash });
   return user;
 };
 
@@ -60,7 +61,6 @@ userSchema.statics.login = async function (email, password) {
   if (!isCorrectPassword) {
     throw Error("The password is incorrect. Please check the password entered");
   }
-
   return user;
 };
 

@@ -17,15 +17,14 @@ import {
 } from "@mui/material";
 
 const WishForm = ({ type, setShowEdit, wish }) => {
+  const { user } = useAuthContext();
   const initialWish = wish || {
-    username: "tapushka",
     title: "",
     description: "",
     url: "",
   };
 
   const { dispatch } = useWishListContext();
-  const { user } = useAuthContext();
   const [newWish, setWish] = useState(initialWish);
   const [isOpen, setIsOpen] = useState(false);
   const [error, setError] = useState(null);
