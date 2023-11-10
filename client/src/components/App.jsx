@@ -10,7 +10,11 @@ import { useAuthContext } from "../hooks/useAuthContext.js";
 const App = () => {
   const { user } = useAuthContext();
   return (
-    <Container sx={{ bgcolor: "#FFBE0B", height: "100vh" }}>
+    <Container
+      maxWidth={false}
+      disableGutters
+      sx={{ bgcolor: "#FFBE0B", height: "100vh" }}
+    >
       <div className="app">
         <HashRouter>
           <Navbar />
