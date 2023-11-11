@@ -1,43 +1,64 @@
 import React, { useState, useEffect } from "react";
-import { useWishListContext } from "../hooks/useWishListContext.js";
-import axios from "axios";
+import { Typography, Button, Stack, Container } from "@mui/material";
 import Wish from "./Wish.jsx";
-import { Typography, Button, Tabs, Tab } from "@mui/material";
+import WishForm from "./WishForm.jsx";
+import WishListFilters from "./WishListFilters.jsx";
+import { useWishListContext } from "../hooks/useWishListContext.js";
 
-const WishList = ({ wishList }) => {
-  const [filter, setFilter] = useState("");
-  const handleFilter = (condition) => {
-    wishList.filter((wish) => condition(wish));
+const WishList = () => {
+  const { wishList } = useWishListContext();
+  const [list, setList] = useState([]);
+  const [showNewWishForm, setShowNewWishForm] = useState(false);
+
+  useEffect(() => {
+    setList(wishList);
+  }, [wishList]);
+
+  const addNewWish = () => {
+    setShowNewWishForm(!showNewWishForm);
   };
-  const { dispatch } = useWishListContext();
+
+  const noMatchesFound = () => {
+    return (
+      <Typography
+        variant="h3"
+        align="center"
+        sx={{ py: 2, color: "#A53603", fontWeight: "bold" }}
+      >
+        No wishes found
+      </Typography>
+    );
+  };
 
   return (
-    <div>
-      {/* <Tabs value={value} onChange={} aria-label='wishlist filter tabs'>
-        <Tab label='All wishes' />
-        <Tab>
-          Reserved wishes
-        </Tab>
-        <Tab>
-          Non-reserved wishes
-        </Tab>
-
-      </Tabs> */}
-      {wishList && (
-        <>
-          <Typography
-            variant="h2"
-            align="center"
-            sx={{ py: 2, color: "#A53603", fontWeight: "bold" }}
-          >
-            Wishes
-          </Typography>
-          {wishList.map((wish) => (
-            <Wish wish={wish} key={wish._id} />
-          ))}
-        </>
-      )}
-    </div>
+    <Container>
+      <Typography
+        variant="h2"
+        align="center"
+        sx={{
+          py: 2,
+          color: "#A53603",
+          fontFamily: "Tilt Prism",
+          fontWeight: "bold",
+        }}
+      >
+        Wishes
+      </Typography>
+      <Stack direction="row" spacing={2} justifyContent="space-evenly">
+        <WishListFilters setList={setList} />
+        <Button
+          sx={{ borderRadius: 8 }}
+          variant="contained"
+          onClick={addNewWish}
+        >
+          Add new wish
+        </Button>
+      </Stack>
+      {showNewWishForm && <WishForm type="add" />}
+      {list?.length
+        ? list.map((wish) => <Wish wish={wish} key={wish._id} />)
+        : noMatchesFound()}
+    </Container>
   );
 };
 
