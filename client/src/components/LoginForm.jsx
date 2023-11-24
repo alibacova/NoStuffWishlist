@@ -1,20 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import {
-  Button,
-  Typography,
-  TextField,
-  Card,
-  Grid,
-  Box,
-  OutlinedInput,
-  FormControl,
-  InputLabel,
-  Stack,
-  Paper,
-} from "@mui/material";
+import { Button, Typography, Stack, Paper } from "@mui/material";
 import { useAuthContext } from "../hooks/useAuthContext.js";
+import FormInput from "./FormInput.jsx";
 
 const LoginForm = () => {
   const initialLoginInfo = {
@@ -39,7 +28,6 @@ const LoginForm = () => {
     axios
       .post("/api/user/login", loginInfo)
       .then((result) => {
-        console.log(result);
         setLoginInfo(initialLoginInfo);
         setLoading(false);
         setError(null);
@@ -48,7 +36,6 @@ const LoginForm = () => {
         navigate("/");
       })
       .catch((err) => {
-        console.log(err.response.data.error);
         setError(err.response.data.error);
       });
   }
@@ -56,41 +43,31 @@ const LoginForm = () => {
   return (
     <Paper component="form">
       <Stack spacing={1} sx={{ p: 2, bgcolor: "#FEE7DC" }}>
-        <>
-          <Typography variant="h3" sx={{ my: 1, color: "black" }}>
-            LOG IN
-          </Typography>
-          <FormControl>
-            <InputLabel htmlFor="component-outlined">Email</InputLabel>
-            <OutlinedInput
-              id="component-outlined"
-              label="Email"
-              value={loginInfo.email}
-              required={true}
-              onChange={(e) =>
-                setLoginInfo({ ...loginInfo, email: e.target.value })
-              }
-              sx={{ color: "primary.main" }}
-            />
-          </FormControl>
-          <FormControl>
-            <InputLabel htmlFor="component-outlined">Password</InputLabel>
-            <OutlinedInput
-              id="component-outlined"
-              label="Password"
-              value={loginInfo.password}
-              required={true}
-              onChange={(e) =>
-                setLoginInfo({ ...loginInfo, password: e.target.value })
-              }
-              sx={{ color: "primary.main" }}
-            />
-          </FormControl>
-          <Button variant="contained" type="submit" onClick={handleSubmit}>
-            Log in
-          </Button>
-          {error && <div className="error">{error}</div>}
-        </>
+        <Typography variant="h3" sx={{ my: 1, color: "black" }}>
+          LOG IN
+        </Typography>
+        <FormInput
+          id="user-email"
+          label="Email"
+          value={loginInfo.email}
+          isRequired={true}
+          onChange={(e) =>
+            setLoginInfo({ ...loginInfo, email: e.target.value })
+          }
+        />
+        <FormInput
+          id="user-password"
+          label="Password"
+          value={loginInfo.password}
+          isRequired={true}
+          onChange={(e) =>
+            setLoginInfo({ ...loginInfo, password: e.target.value })
+          }
+        />
+        <Button variant="contained" type="submit" onClick={handleSubmit}>
+          Log in
+        </Button>
+        {error && <div className="error">{error}</div>}
       </Stack>
     </Paper>
   );

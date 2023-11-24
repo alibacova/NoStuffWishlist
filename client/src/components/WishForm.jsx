@@ -2,31 +2,20 @@ import React, { useState } from "react";
 import { useWishListContext } from "../hooks/useWishListContext.js";
 import { useAuthContext } from "../hooks/useAuthContext.js";
 import axios from "axios";
-import {
-  Button,
-  Typography,
-  TextField,
-  Card,
-  Grid,
-  Box,
-  OutlinedInput,
-  FormControl,
-  InputLabel,
-  Stack,
-  Paper,
-} from "@mui/material";
+import { Button, Stack, Paper, Container } from "@mui/material";
+import FormInput from "./FormInput.jsx";
 
-const WishForm = ({ type, setShowEdit, wish }) => {
+const WishForm = ({ setShowEdit, type, wish }) => {
   const { user } = useAuthContext();
+  const { dispatch } = useWishListContext();
+
   const initialWish = wish || {
     title: "",
     description: "",
     url: "",
   };
 
-  const { dispatch } = useWishListContext();
   const [newWish, setWish] = useState(initialWish);
-  const [isOpen, setIsOpen] = useState(false);
   const [error, setError] = useState(null);
 
   const handleSubmit = (e) => {
@@ -65,57 +54,38 @@ const WishForm = ({ type, setShowEdit, wish }) => {
   };
 
   return (
-    <Paper component="form">
-      <Stack spacing={1} sx={{ p: 2, bgcolor: "#FEE7DC" }}>
-        <Typography
-          variant="h3"
-          sx={{ my: 1, color: "primary.main" }}
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          {type === "add" ? "+ Add a new wish" : "Edit wish"}
-        </Typography>
-        {isOpen && (
-          <>
-            <FormControl>
-              <InputLabel htmlFor="component-outlined">Title</InputLabel>
-              <OutlinedInput
-                id="component-outlined"
-                label="Title"
-                value={newWish.title}
-                required={true}
-                onChange={(e) => setWish({ ...newWish, title: e.target.value })}
-                sx={{ color: "primary.main" }}
-              />
-            </FormControl>
-            <FormControl>
-              <TextField
-                multiline
-                id="outlined-multiline-flexible"
-                label="Description"
-                value={newWish.description}
-                required={true}
-                onChange={(e) =>
-                  setWish({ ...newWish, description: e.target.value })
-                }
-              />
-            </FormControl>
-            <FormControl>
-              <InputLabel htmlFor="component-outlined">Link</InputLabel>
-              <OutlinedInput
-                id="component-outlined"
-                label="Link"
-                value={newWish.url}
-                onChange={(e) => setWish({ ...newWish, url: e.target.value })}
-              />
-            </FormControl>
-            <Button variant="contained" type="submit" onClick={handleSubmit}>
-              Submit
-            </Button>
-            {error && <div className="error">{error}</div>}
-          </>
-        )}
-      </Stack>
-    </Paper>
+    <Container>
+      <Paper component="form">
+        <Stack spacing={1} sx={{ p: 2, bgcolor: "#FEE7DC" }}>
+          <FormInput
+            id="wish-title"
+            isRequired={true}
+            label="Title"
+            onChange={(e) => setWish({ ...newWish, title: e.target.value })}
+            value={newWish.title}
+          />
+          <FormInput
+            id="wish-description"
+            value={newWish.description}
+            isMultiline={true}
+            label="Description"
+            onChange={(e) =>
+              setWish({ ...newWish, description: e.target.value })
+            }
+          />
+          <FormInput
+            id="wish-link"
+            value={newWish.url}
+            label="Link"
+            onChange={(e) => setWish({ ...newWish, url: e.target.value })}
+          />
+          <Button variant="contained" type="submit" onClick={handleSubmit}>
+            Submit
+          </Button>
+          {error && <div className="error">{error}</div>}
+        </Stack>
+      </Paper>
+    </Container>
   );
 };
 

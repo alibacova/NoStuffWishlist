@@ -1,16 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import {
-  Button,
-  Typography,
-  OutlinedInput,
-  FormControl,
-  InputLabel,
-  Stack,
-  Paper,
-} from "@mui/material";
+import { Button, Typography, Stack, Paper } from "@mui/material";
 import { useAuthContext } from "../hooks/useAuthContext.js";
+import FormInput from "./FormInput.jsx";
 
 const SignupForm = () => {
   const initialUserInfo = {
@@ -36,7 +29,7 @@ const SignupForm = () => {
     await signup(userInfo);
   }
 
-  async function signup(userInfo) {
+  function signup(userInfo) {
     axios
       .post("/api/user/signup", userInfo)
       .then((result) => {
@@ -58,57 +51,45 @@ const SignupForm = () => {
   return (
     <Paper component="form">
       <Stack spacing={1} sx={{ p: 2, bgcolor: "#FEE7DC" }}>
-        <>
-          <Typography variant="h3" sx={{ my: 1, color: "black" }}>
-            SIGN UP
-          </Typography>
-          <FormControl>
-            <InputLabel htmlFor="component-outlined">Email</InputLabel>
-            <OutlinedInput
-              id="component-outlined"
-              label="Email"
-              value={userInfo.email}
-              required={true}
-              onChange={(e) =>
-                setUserInfo({ ...userInfo, email: e.target.value })
-              }
-              sx={{ color: "primary.main" }}
-            />
-          </FormControl>
-          <FormControl>
-            <InputLabel htmlFor="component-outlined">Password</InputLabel>
-            <OutlinedInput
-              id="component-outlined"
-              label="Password"
-              value={userInfo.password}
-              required={true}
-              onChange={(e) =>
-                setUserInfo({ ...userInfo, password: e.target.value })
-              }
-              sx={{ color: "primary.main" }}
-            />
-          </FormControl>
-          <FormControl>
-            <InputLabel htmlFor="component-outlined">
-              Password Confirmation
-            </InputLabel>
-            <OutlinedInput
-              id="component-outlined"
-              label="Password Confirmation"
-              value={userInfo.passwordConf}
-              required={true}
-              onChange={(e) =>
-                setUserInfo({ ...userInfo, passwordConf: e.target.value })
-              }
-              sx={{ color: "primary.main" }}
-            />
-          </FormControl>
-          <Button variant="contained" type="submit" onClick={handleSubmit}>
-            {/* need to add disabled property for when the status isLoading is true */}
-            Sign up
-          </Button>
-          {error && <div className="error">{error}</div>}
-        </>
+        <Typography variant="h3" sx={{ my: 1, color: "black" }}>
+          SIGN UP
+        </Typography>
+        <FormInput
+          error={error}
+          helperText={error}
+          id="user-email"
+          isRequired={true}
+          label="Email"
+          onChange={(e) => setUserInfo({ ...userInfo, email: e.target.value })}
+          value={userInfo.email}
+        />
+        <FormInput
+          error={error}
+          helperText={error}
+          id="user-password"
+          isRequired={true}
+          label="Password"
+          onChange={(e) =>
+            setUserInfo({ ...userInfo, password: e.target.value })
+          }
+          value={userInfo.password}
+        />
+        <FormInput
+          error={error}
+          helperText={error}
+          id="user-password-confirmation"
+          isRequired={true}
+          label="Password Confirmation"
+          onChange={(e) =>
+            setUserInfo({ ...userInfo, passwordConf: e.target.value })
+          }
+          value={userInfo.passwordConf}
+        />
+        <Button variant="contained" type="submit" onClick={handleSubmit}>
+          {/* need to add disabled property for when the status isLoading is true */}
+          Sign up
+        </Button>
+        {error && <div className="error">{error}</div>}
       </Stack>
     </Paper>
   );
