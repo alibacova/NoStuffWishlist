@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Button, Typography, Stack, Paper } from "@mui/material";
@@ -11,20 +11,44 @@ const SignupForm = () => {
     password: "",
     passwordConf: "",
   };
+  const noError = {
+    isValid: true,
+    message: null,
+  };
+  const noErrorObject = {
+    email: noError,
+    password: noError,
+    general: noError,
+  };
+
   const { dispatch } = useAuthContext();
+  const navigate = useNavigate();
 
   const [userInfo, setUserInfo] = useState(initialUserInfo);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState(noErrorObject);
   const [loading, setLoading] = useState(false);
-
-  const navigate = useNavigate();
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (userInfo.password !== userInfo.passwordConf) {
-      return setError("Passwords do not match");
+    if (!userInfo.email || !userInfo.password || !userInfo.passwordConf) {
+      return setError({
+        ...error,
+        general: {
+          isValid: false,
+          message: "Please fill out all the fields",
+        },
+      });
     }
-    setError(null);
+    if (userInfo.password !== userInfo.passwordConf) {
+      return setError({
+        ...error,
+        password: {
+          isValid: false,
+          message: "Passwords do not match",
+        },
+      });
+    }
+    setError(noErrorObject);
     setLoading(true);
     await signup(userInfo);
   }
@@ -36,16 +60,24 @@ const SignupForm = () => {
         console.log(result);
         setUserInfo(initialUserInfo);
         setLoading(false);
-        setError(null);
+        setError(noErrorObject);
         dispatch({ type: "SIGN_UP", payload: result.data });
         localStorage.setItem("user", JSON.stringify(result.data));
         navigate("/");
       })
       .catch((err) => {
-        console.log(err.response.data.error);
-        setError(err.response.data.error);
+        setError({
+          ...error,
+          general: {
+            isValid: false,
+            message: err.response.data.error,
+          },
+        });
       });
   }
+  useEffect(() => {
+    setError(noErrorObject);
+  }, [userInfo]);
 
   // TODO: add conditional rendering for loading
   return (
@@ -55,8 +87,8 @@ const SignupForm = () => {
           SIGN UP
         </Typography>
         <FormInput
-          error={error}
-          helperText={error}
+          error={!error.email.isValid || !error.general.isValid}
+          helperText={error.email.message}
           id="user-email"
           isRequired={true}
           label="Email"
@@ -64,8 +96,7 @@ const SignupForm = () => {
           value={userInfo.email}
         />
         <FormInput
-          error={error}
-          helperText={error}
+          error={!error.general.isValid}
           id="user-password"
           isRequired={true}
           label="Password"
@@ -75,8 +106,8 @@ const SignupForm = () => {
           value={userInfo.password}
         />
         <FormInput
-          error={error}
-          helperText={error}
+          error={!error.password.isValid || !error.general.isValid}
+          helperText={error.password.message}
           id="user-password-confirmation"
           isRequired={true}
           label="Password Confirmation"
@@ -89,7 +120,7 @@ const SignupForm = () => {
           {/* need to add disabled property for when the status isLoading is true */}
           Sign up
         </Button>
-        {error && <div className="error">{error}</div>}
+        {!error.general.isValid && <div>{error.general.message}</div>}
       </Stack>
     </Paper>
   );
