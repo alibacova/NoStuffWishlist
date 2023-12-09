@@ -4,23 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { Button, Typography, Stack, Paper } from "@mui/material";
 import { useAuthContext } from "../hooks/useAuthContext.js";
 import FormInput from "./FormInput.jsx";
+import { initialUserInfo, noErrorObject } from "../utils/constants.js";
 
 const SignupForm = () => {
-  const initialUserInfo = {
-    email: "",
-    password: "",
-    passwordConf: "",
-  };
-  const noError = {
-    isValid: true,
-    message: null,
-  };
-  const noErrorObject = {
-    email: noError,
-    password: noError,
-    general: noError,
-  };
-
   const { dispatch } = useAuthContext();
   const navigate = useNavigate();
 
@@ -48,36 +34,34 @@ const SignupForm = () => {
         },
       });
     }
-    setError(noErrorObject);
-    setLoading(true);
     await signup(userInfo);
   }
+
+  const onSuccess = (result) => {
+    setLoading(false);
+    setError(noErrorObject);
+    dispatch({ type: "SIGN_UP", payload: result.data });
+    localStorage.setItem("user", JSON.stringify(result.data));
+    navigate("/");
+  };
+
+  const onError = (err) => {
+    setLoading(false);
+    setError({
+      ...error,
+      general: {
+        isValid: false,
+        message: err.response.data.error,
+      },
+    });
+  };
 
   function signup(userInfo) {
     axios
       .post("/api/user/signup", userInfo)
-      .then((result) => {
-        console.log(result);
-        setUserInfo(initialUserInfo);
-        setLoading(false);
-        setError(noErrorObject);
-        dispatch({ type: "SIGN_UP", payload: result.data });
-        localStorage.setItem("user", JSON.stringify(result.data));
-        navigate("/");
-      })
-      .catch((err) => {
-        setError({
-          ...error,
-          general: {
-            isValid: false,
-            message: err.response.data.error,
-          },
-        });
-      });
+      .then((result) => onSuccess(result))
+      .catch((err) => onError(err));
   }
-  useEffect(() => {
-    setError(noErrorObject);
-  }, [userInfo]);
 
   // TODO: add conditional rendering for loading
   return (
@@ -92,7 +76,12 @@ const SignupForm = () => {
           id="user-email"
           isRequired={true}
           label="Email"
-          onChange={(e) => setUserInfo({ ...userInfo, email: e.target.value })}
+          onChange={(e) => {
+            if (error !== noErrorObject) {
+              setError(noErrorObject);
+            }
+            setUserInfo({ ...userInfo, email: e.target.value });
+          }}
           value={userInfo.email}
         />
         <FormInput
@@ -100,9 +89,12 @@ const SignupForm = () => {
           id="user-password"
           isRequired={true}
           label="Password"
-          onChange={(e) =>
-            setUserInfo({ ...userInfo, password: e.target.value })
-          }
+          onChange={(e) => {
+            if (error !== noErrorObject) {
+              setError(noErrorObject);
+            }
+            setUserInfo({ ...userInfo, password: e.target.value });
+          }}
           value={userInfo.password}
         />
         <FormInput
@@ -111,9 +103,12 @@ const SignupForm = () => {
           id="user-password-confirmation"
           isRequired={true}
           label="Password Confirmation"
-          onChange={(e) =>
-            setUserInfo({ ...userInfo, passwordConf: e.target.value })
-          }
+          onChange={(e) => {
+            if (error !== noErrorObject) {
+              setError(noErrorObject);
+            }
+            setUserInfo({ ...userInfo, passwordConf: e.target.value });
+          }}
           value={userInfo.passwordConf}
         />
         <Button variant="contained" type="submit" onClick={handleSubmit}>
