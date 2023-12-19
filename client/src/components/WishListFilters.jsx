@@ -1,6 +1,6 @@
-import Button from "@mui/material/Button";
 import { useState, useEffect } from "react";
 import { useWishListContext } from "../hooks/useWishListContext.js";
+import { FilterButton } from "./FilterButton.jsx";
 
 const WishListFilters = ({ setList }) => {
   const { wishList } = useWishListContext();
@@ -47,56 +47,41 @@ const WishListFilters = ({ setList }) => {
 
   return (
     <>
-      <Button
-        sx={{ borderRadius: 8 }}
-        variant="contained"
+      <FilterButton
         disabled={filterType === "all"}
         onClick={() => {
           handleFilter("all");
         }}
-      >
-        All
-      </Button>
-      <Button
-        sx={{ borderRadius: 8 }}
-        variant="contained"
+        text="All"
+      />
+      <FilterButton
         disabled={filterType === "reserved"}
         onClick={() => {
           handleFilter("reserved");
         }}
-      >
-        Reserved
-      </Button>
-      <Button
-        sx={{ borderRadius: 8 }}
-        variant="contained"
+        text="Reserved"
+      />
+      <FilterButton
         disabled={filterType === "non-reserved"}
         onClick={() => {
           handleFilter("non-reserved");
         }}
-      >
-        Non-reserved
-      </Button>
-      <Button
-        sx={{ borderRadius: 8 }}
-        variant="contained"
+        text="Non-reserved"
+      />
+      <FilterButton
         disabled={filterType === "fulfilled"}
         onClick={() => {
           handleFilter("fulfilled");
         }}
-      >
-        Fulfilled
-      </Button>
-      <Button
-        sx={{ borderRadius: 8 }}
-        variant="contained"
+        text="Fulfilled"
+      />
+      <FilterButton
         disabled={filterType === "active"}
         onClick={() => {
           handleFilter("active");
         }}
-      >
-        Active
-      </Button>
+        text="Active"
+      />
     </>
   );
 };

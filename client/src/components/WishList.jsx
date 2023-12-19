@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Typography, Button, Stack, Container } from "@mui/material";
+import { Typography, Stack, Container } from "@mui/material";
 import Wish from "./Wish.jsx";
 import WishForm from "./WishForm.jsx";
 import WishListFilters from "./WishListFilters.jsx";
 import { useWishListContext } from "../hooks/useWishListContext.js";
+import { FilterButton } from "./FilterButton.jsx";
 
 const WishList = () => {
   const { wishList } = useWishListContext();
@@ -46,13 +47,7 @@ const WishList = () => {
       </Typography>
       <Stack direction="row" spacing={2} justifyContent="space-evenly">
         <WishListFilters setList={setList} />
-        <Button
-          sx={{ borderRadius: 8 }}
-          variant="contained"
-          onClick={addNewWish}
-        >
-          Add new wish
-        </Button>
+        <FilterButton onClick={addNewWish} text="Add new wish" />
       </Stack>
       {showNewWishForm && <WishForm type="add" />}
       {list?.length
