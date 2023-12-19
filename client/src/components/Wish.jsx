@@ -4,17 +4,8 @@ import { useAuthContext } from "../hooks/useAuthContext.js";
 import axios from "axios";
 import WishForm from "./WishForm.jsx";
 import ReserveWishForm from "./ReserveWishForm.jsx";
-import {
-  Button,
-  Typography,
-  Card,
-  Paper,
-  Grid,
-  IconButton,
-  Link,
-} from "@mui/material";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
+import { Button, Typography, Card, Paper, Grid, Link } from "@mui/material";
+import { GenericIconButton as IconButton } from "./IconButton.jsx";
 
 const Wish = ({ wish }) => {
   const { dispatch } = useWishListContext();
@@ -43,6 +34,7 @@ const Wish = ({ wish }) => {
     setError(null);
   };
 
+  //TODO: add confirmation modal for deleting a wish
   return (
     <Paper sx={{ my: 4, p: 3, bgcolor: "#FEE7DC" }}>
       <Grid container spacing={2}>
@@ -90,15 +82,15 @@ const Wish = ({ wish }) => {
         </Grid>
         <Grid item xs={1}>
           <IconButton
-            aria-label="edit"
-            size="small"
-            onClick={() => setShowEdit(!showEdit)}
-          >
-            <EditIcon sx={{ color: "#3A86FF" }} />
-          </IconButton>
-          <IconButton aria-label="delete" size="small" onClick={handleDelete}>
-            <DeleteIcon sx={{ color: "#FB5607" }} />
-          </IconButton>
+            type="edit"
+            color="#3A86FF"
+            handleClick={() => setShowEdit(!showEdit)}
+          />
+          <IconButton
+            type="delete"
+            color="#FB5607"
+            handleClick={handleDelete}
+          />
         </Grid>
       </Grid>
     </Paper>
