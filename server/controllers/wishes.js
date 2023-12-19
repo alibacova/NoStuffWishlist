@@ -21,8 +21,8 @@ const controllers = {
   },
 
   addWish: async (req, res) => {
-    if (!req.body.title || !req.body.description) {
-      res.status(400).send("Please fill in the title and the description");
+    if (!req.body.title) {
+      return res.status(400).json({ error: "Please fill in the title" });
     }
 
     const user_id = req.user_id._id;

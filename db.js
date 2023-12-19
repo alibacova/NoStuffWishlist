@@ -5,7 +5,7 @@ const validator = require("validator");
 const wishSchema = new mongoose.Schema({
   user_id: { type: String, required: true },
   title: { type: String, required: true },
-  description: { type: String, required: true },
+  description: { type: String, required: false },
   reserved: { type: Boolean, default: false },
   reserver_user_id: { type: String, default: null },
   reserver_email: String,
@@ -19,6 +19,7 @@ const userSchema = new mongoose.Schema({
 });
 
 // static signup methods
+// TODO: customize error handling, maybe add the cause for better handling on client-side
 userSchema.statics.signup = async function (email, password) {
   if (!email || !password) {
     throw Error("Please fill out both email and password fields");
