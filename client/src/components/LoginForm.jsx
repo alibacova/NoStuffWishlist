@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Button, Typography, Stack, Paper } from "@mui/material";
@@ -10,7 +10,6 @@ const LoginForm = () => {
     email: "",
     password: "",
   };
-
   const { dispatch } = useAuthContext();
   const navigate = useNavigate();
   const [loginInfo, setLoginInfo] = useState(initialLoginInfo);
@@ -19,7 +18,9 @@ const LoginForm = () => {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setError(null);
+    if (!loginInfo.email || !loginInfo.password) {
+      return setError("Please fill out both email and password fields");
+    }
     setLoading(true);
     await login(loginInfo);
   }
@@ -27,18 +28,22 @@ const LoginForm = () => {
   function login(loginInfo) {
     axios
       .post("/api/user/login", loginInfo)
-      .then((result) => {
-        setLoginInfo(initialLoginInfo);
-        setLoading(false);
-        setError(null);
-        dispatch({ type: "SIGN_IN", payload: result.data });
-        localStorage.setItem("user", JSON.stringify(result.data));
-        navigate("/");
-      })
-      .catch((err) => {
-        setError(err.response.data.error);
-      });
+      .then((result) => onSuccess(result))
+      .catch((err) => onError(err));
   }
+
+  const onSuccess = (result) => {
+    setLoading(false);
+    setError(null);
+    dispatch({ type: "SIGN_IN", payload: result.data });
+    localStorage.setItem("user", JSON.stringify(result.data));
+    navigate("/");
+  };
+
+  const onError = (err) => {
+    setLoading(false);
+    setError(err.response.data.error);
+  };
 
   return (
     <Paper component="form">
@@ -47,22 +52,32 @@ const LoginForm = () => {
           LOG IN
         </Typography>
         <FormInput
+          error={error !== null}
+          helperText={error}
           id="user-email"
-          label="Email"
-          value={loginInfo.email}
           isRequired={true}
-          onChange={(e) =>
-            setLoginInfo({ ...loginInfo, email: e.target.value })
-          }
+          label="Email"
+          onChange={(e) => {
+            if (error) {
+              setError(null);
+            }
+            setLoginInfo({ ...loginInfo, email: e.target.value });
+          }}
+          value={loginInfo.email}
         />
         <FormInput
+          error={error !== null}
+          helperText={error}
           id="user-password"
-          label="Password"
-          value={loginInfo.password}
           isRequired={true}
-          onChange={(e) =>
-            setLoginInfo({ ...loginInfo, password: e.target.value })
-          }
+          label="Password"
+          onChange={(e) => {
+            if (error) {
+              setError(null);
+            }
+            setLoginInfo({ ...loginInfo, password: e.target.value });
+          }}
+          value={loginInfo.password}
         />
         <Button variant="contained" type="submit" onClick={handleSubmit}>
           Log in

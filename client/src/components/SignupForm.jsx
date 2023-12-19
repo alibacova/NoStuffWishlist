@@ -1,15 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Button, Typography, Stack, Paper } from "@mui/material";
 import { useAuthContext } from "../hooks/useAuthContext.js";
 import FormInput from "./FormInput.jsx";
-import { initialUserInfo, noErrorObject } from "../utils/constants.js";
+import { noErrorObject } from "../utils/constants.js";
 
 const SignupForm = () => {
   const { dispatch } = useAuthContext();
   const navigate = useNavigate();
-
+  const initialUserInfo = {
+    email: "",
+    password: "",
+    passwordConf: "",
+  };
   const [userInfo, setUserInfo] = useState(initialUserInfo);
   const [error, setError] = useState(noErrorObject);
   const [loading, setLoading] = useState(false);
@@ -34,6 +38,7 @@ const SignupForm = () => {
         },
       });
     }
+    setLoading(true);
     await signup(userInfo);
   }
 
