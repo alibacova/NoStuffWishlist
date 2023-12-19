@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { useWishListContext } from "../hooks/useWishListContext.js";
 import { useAuthContext } from "../hooks/useAuthContext.js";
 import axios from "axios";
-import { Button, Stack, Paper, Container } from "@mui/material";
+import { Button, Grid, Stack, Paper, Container } from "@mui/material";
 import FormInput from "./FormInput.jsx";
+import { GenericIconButton as IconButton } from "./IconButton.jsx";
 
-const WishForm = ({ setShowEdit, type, wish }) => {
+const WishForm = ({ setShowEdit, setShowForm, type, wish }) => {
   const { user } = useAuthContext();
   const { dispatch } = useWishListContext();
-
   const initialWish = wish || {
     title: "",
     description: "",
@@ -24,6 +24,10 @@ const WishForm = ({ setShowEdit, type, wish }) => {
       setError("You must be logged in!");
       return;
     }
+    if (!newWish.title) {
+      setError("Please fill in the title");
+      return;
+    }
     if (type === "add") {
       axios
         .post("/api/wishList/", newWish, {
@@ -34,8 +38,11 @@ const WishForm = ({ setShowEdit, type, wish }) => {
         .then((result) =>
           dispatch({ type: "CREATE_WISH", payload: result.data }),
         )
-        .catch((err) => setError(err));
+        .catch((err) => {
+          setError(err.response.data.error);
+        });
       setWish(initialWish);
+      setShowForm(false);
     } else if (type === "edit") {
       axios
         .put(`/api/wishList/${wish._id}`, newWish, {
@@ -44,7 +51,6 @@ const WishForm = ({ setShowEdit, type, wish }) => {
           },
         })
         .then((result) => {
-          console.log("result ", result);
           dispatch({ type: "UPDATE_WISH", payload: result.data });
         })
         .catch((err) => setError(err));
@@ -53,15 +59,39 @@ const WishForm = ({ setShowEdit, type, wish }) => {
     setError(null);
   };
 
+  const handleCloseForm = () => {
+    if (type === "add") {
+      setShowForm(false);
+    } else if (type === "edit") {
+      setShowEdit(false);
+    }
+  };
+
   return (
     <Container>
-      <Paper component="form">
-        <Stack spacing={1} sx={{ p: 2, bgcolor: "#FEE7DC" }}>
+      <Paper component="form" square={false} sx={{ bgcolor: "#FEE7DC" }}>
+        <Grid container spacing={2} justifyContent="flex-end">
+          <Grid item xs={1}>
+            <IconButton
+              handleClick={handleCloseForm}
+              type="close"
+              color="#8338EC"
+            />
+          </Grid>
+        </Grid>
+        <Stack spacing={1} sx={{ bgcolor: "#FEE7DC" }} margin={5}>
           <FormInput
+            error={error !== null}
+            helperText={error}
             id="wish-title"
             isRequired={true}
             label="Title"
-            onChange={(e) => setWish({ ...newWish, title: e.target.value })}
+            onChange={(e) => {
+              if (error) {
+                setError(null);
+              }
+              setWish({ ...newWish, title: e.target.value });
+            }}
             value={newWish.title}
           />
           <FormInput
@@ -82,7 +112,6 @@ const WishForm = ({ setShowEdit, type, wish }) => {
           <Button variant="contained" type="submit" onClick={handleSubmit}>
             Submit
           </Button>
-          {error && <div className="error">{error}</div>}
         </Stack>
       </Paper>
     </Container>

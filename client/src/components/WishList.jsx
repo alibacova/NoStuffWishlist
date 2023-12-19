@@ -49,7 +49,9 @@ const WishList = () => {
         <WishListFilters setList={setList} />
         <FilterButton onClick={addNewWish} text="Add new wish" />
       </Stack>
-      {showNewWishForm && <WishForm type="add" />}
+      {showNewWishForm && (
+        <WishForm type="add" setShowForm={setShowNewWishForm} />
+      )}
       {list?.length
         ? list.map((wish) => <Wish wish={wish} key={wish._id} />)
         : noMatchesFound()}
